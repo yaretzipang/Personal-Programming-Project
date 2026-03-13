@@ -14,7 +14,7 @@ def clear_screen():
 def create_players(num_of_players):
 
     for i in range(num_of_players):
-        player_ = Player()
+        player+i = Player()
 
 
 class Player:
