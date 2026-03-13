@@ -3,10 +3,11 @@ import os, time
 
 
 def clear_screen():
+
+    print("(clearing screen)")
     for i in range(3):
         print(".")
         time.sleep(1)
-    print("clear screen")
     os.system("cls")
 
 
