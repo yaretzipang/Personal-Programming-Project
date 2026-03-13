@@ -6,6 +6,7 @@ def clear_screen():
     for i in range(3):
         print(".")
         time.sleep(3)
+    print("clear screen")
     os.system("clear")
 
 
