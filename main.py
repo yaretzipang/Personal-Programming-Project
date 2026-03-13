@@ -2,6 +2,17 @@
 import os, time
 
 
+players = []
+
+
+class Player:
+
+    def _init_(self):
+        self.player_cards = []
+        self.num_of_cards = 0
+
+
+
 def clear_screen():
 
     print("(clearing screen)")
@@ -14,14 +25,8 @@ def clear_screen():
 def create_players(num_of_players):
 
     for i in range(num_of_players):
-        player+i = Player()
-
-
-class Player:
-
-    def _init_[self]:
-        self.player_cards = []
-        self.num_of_cards = 0
+        player = Player()
+        players.append(player)
 
 
 print("""--------------
@@ -30,3 +35,4 @@ print("""--------------
 num_of_players = int(input("How many players are playing (pick a number from 2-4)\n"))
 clear_screen()
 create_players(num_of_players)
+print(players)
