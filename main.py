@@ -14,3 +14,4 @@ print("""--------------
      UNO
 --------------""")
 num_of_players = int(input("How many players are playing (pick a number from 2-4)\n"))
+clear_screen()
