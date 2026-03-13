@@ -14,13 +14,14 @@ def clear_screen():
 def create_players(num_of_players):
 
     for i in range(num_of_players):
-        player_[i] = Player
+        player_ = Player()
 
 
 class Player:
 
-    player_cards = []
-    num_of_cards = 0
+    def _init_[self]:
+        self.player_cards = []
+        self.num_of_cards = 0
 
 
 print("""--------------
