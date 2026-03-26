@@ -85,8 +85,11 @@ def generate_cards(turn):
             status = str(random.randint(0, 9))
         elif status == "S" or status == "2+" or status == "Re":
             status = random.choice(colours)
+        elif status == "W":
+            status = "C"
         
         card = card + status
+        print(card)
 
         if turn == 1:
             (players[0][1][0]).append(card)
