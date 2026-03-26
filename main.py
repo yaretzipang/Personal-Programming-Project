@@ -49,7 +49,6 @@ def output_player_cards():
     else:
         generating = False
 
-    card_list = {}
     card_list = get_card_list(generating)
 
     print(card_list)
@@ -69,14 +68,15 @@ def get_card_list(generating):
         card_list = players[3][1][0]
 
     if generating == True:
-        first_card_list = generate_cards(card_list)
-        card_list = first_card_list
+        card_list = generate_cards()
     
     return card_list
 
 
 
-def generate_cards(card_list):
+def generate_cards():
+
+    card_list = []
 
     for i in range(7):
         card = ""
@@ -92,6 +92,15 @@ def generate_cards(card_list):
         
         card = card + status
         print(card)
+
+        if turn == 1:
+            card_list = players[0][1][0]
+        elif turn == 2:
+            card_list = players[1][1][0]
+        elif turn == 3:
+            card_list = players[2][1][0]
+        elif turn == 4:
+            card_list = players[3][1][0]
 
         card_list.append(card)
 
