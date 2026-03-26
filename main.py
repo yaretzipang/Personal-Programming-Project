@@ -4,7 +4,7 @@ import os, time, random
 status_list = ["R", "Y", "G", "B", "R", "Y", "G", "B", "R", "Y", "G", "B", "R", "Y", "G", "B", "S", "2+", "W", "Re"]
 colours = ["R", "Y", "G", "B"]
 numbers = 0
-turn = 0
+turn = 1
 round = 1
 
 class Player:
@@ -61,22 +61,22 @@ def get_card_list(generating):
         card_list = generate_cards()
 
         if turn == 1:
-            players[0][1] = card_list
+            players[0][1][0] = card_list
         elif turn == 2:
-            players[1][1] = card_list
+            players[1][1][0] = card_list
         elif turn == 3:
-            players[2][1] = card_list
+            players[2][1][0] = card_list
         elif turn == 4:
-            players[3][1] = card_list
+            players[3][1][0] = card_list
 
     if turn == 1:
-        card_list = players[0][1]
+        card_list = players[0][1][0]
     elif turn == 2:
-        card_list = players[1][1]
+        card_list = players[1][1][0]
     elif turn == 3:
-        card_list = players[2][1]
+        card_list = players[2][1][0]
     elif turn == 4:
-        card_list = players[3][1]
+        card_list = players[3][1][0]
     
     return card_list
 
