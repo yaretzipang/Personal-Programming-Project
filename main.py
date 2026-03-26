@@ -1,7 +1,7 @@
 ## Personal Programming Project - Yaretzi Pang
 import os, time, random
 
-status_list = ["R", "Y", "G", "B", "S", "2+", "W", "Re"]
+status_list = ["R", "Y", "G", "B", "R", "Y", "G", "B", "R", "Y", "G", "B", "R", "Y", "G", "B", "S", "2+", "W", "Re"]
 colours = ["R", "Y", "G", "B"]
 numbers = 0
 turn = 0
@@ -91,14 +91,20 @@ def generate_cards(turn):
         card = card + status
         print(card)
 
+
         if turn == 1:
-            (players[0][1][0]).append(card)
+            card_list = players[0][1][0]
         elif turn == 2:
-            (players[1][1][0]).append(card)
+            card_list = players[1][1][0]
         elif turn == 3:
-            (players[2][1][0]).append(card)
+            card_list = players[2][1][0]
         elif turn == 4:
-            (players[3][1][0]).append(card)
+            card_list = players[3][1][0]
+
+        card_list.append(card)
+
+    
+    return card_list
 
 
 
