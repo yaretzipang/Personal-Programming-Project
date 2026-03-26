@@ -51,7 +51,10 @@ def output_player_cards():
 
     card_list = get_card_list(generating)
 
-    print(card_list)
+    print(f"Player {turn}, your cards are:")
+
+    for card in card_list:
+        print(card)
 
 
 
@@ -63,20 +66,20 @@ def get_card_list(generating):
         if turn == 1:
             players["0"][0] = card_list
         elif turn == 2:
-            players[1][1][0] = card_list
+            players["1"][0] = card_list
         elif turn == 3:
-            players[2][1][0] = card_list
+            players["2"][0] = card_list
         elif turn == 4:
-            players[3][1][0] = card_list
+            players["3"][0] = card_list
 
     if turn == 1:
         card_list = players["0"][0]
     elif turn == 2:
-        card_list = players[1][1][0]
+        card_list = players["1"][0]
     elif turn == 3:
-        card_list = players[2][1][0]
+        card_list = players["2"][0]
     elif turn == 4:
-        card_list = players[3][1][0]
+        card_list = players["3"][0]
     
     return card_list
 
@@ -113,8 +116,7 @@ print("""--------------
      UNO
 --------------""")
 num_of_players = int(input("How many players are playing (pick a number from 2-4)\n"))
-# clear_screen()
+clear_screen()
 generating = True
 players = create_players()
 player_turn(players)
-print(players)
