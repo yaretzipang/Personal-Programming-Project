@@ -61,22 +61,22 @@ def get_card_list(generating):
         card_list = generate_cards()
 
         if turn == 1:
-            players[0][1][0] = card_list
+            players[0][1] = card_list
         elif turn == 2:
-            players[1][1][0] = card_list
+            players[1][1] = card_list
         elif turn == 3:
-            players[2][1][0] = card_list
+            players[2][1] = card_list
         elif turn == 4:
-            players[3][1][0] = card_list
+            players[3][1] = card_list
 
     if turn == 1:
-        card_list = players[0][1][0]
+        card_list = players[0][1]
     elif turn == 2:
-        card_list = players[1][1][0]
+        card_list = players[1][1]
     elif turn == 3:
-        card_list = players[2][1][0]
+        card_list = players[2][1]
     elif turn == 4:
-        card_list = players[3][1][0]
+        card_list = players[3][1]
     
     return card_list
 
