@@ -116,5 +116,5 @@ num_of_players = int(input("How many players are playing (pick a number from 2-4
 # clear_screen()
 generating = True
 players = create_players()
-player_turn(players)
 print(players)
+player_turn(players)
