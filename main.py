@@ -61,7 +61,7 @@ def get_card_list(generating):
         card_list = generate_cards()
 
         if turn == 1:
-            players[0][1][0] = card_list
+            players["0"][0] = card_list
         elif turn == 2:
             players[1][1][0] = card_list
         elif turn == 3:
@@ -70,7 +70,7 @@ def get_card_list(generating):
             players[3][1][0] = card_list
 
     if turn == 1:
-        card_list = players[0][1][0]
+        card_list = players["0"][0]
     elif turn == 2:
         card_list = players[1][1][0]
     elif turn == 3:
@@ -116,5 +116,5 @@ num_of_players = int(input("How many players are playing (pick a number from 2-4
 # clear_screen()
 generating = True
 players = create_players()
-print(players)
 player_turn(players)
+print(players)
