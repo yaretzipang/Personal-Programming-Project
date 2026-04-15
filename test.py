@@ -10,7 +10,8 @@ turn = 1
 round = 1
 win = False
 selected_card = ""
-
+selected_colour = ""
+stored_card = ""
 
 
 def clear_screen():
@@ -28,63 +29,78 @@ def create_players():
 
     for i in range(num_of_players):
         
-        players.update({f"{i}": [[], 7]})
+        players.update({f"{i}": [[], 0]})
 
 
     return players
 
 
-def player_turn(turn, round, selected_card):
+def player_turn(turn, round, selected_card, selected_colour, stored_card, win):
 
     if round == 1:
         generating = True
     else:
         generating = False
 
-    card_list = get_card_list(generating, turn)
 
+    card_list = get_card_list(generating, turn)
     output_player_cards(card_list, turn)
-    stored_card = selected_card
-    selected_card, card_list = get_selected_card(card_list, stored_card, turn)
-    time.sleep(1)
+    if selected_card != "draw":
+        stored_card = selected_card
+    
+    selected_card, card_list = get_selected_card(card_list, stored_card, turn, selected_colour, round)
+    #time.sleep(1)
     print("Place the computer where everyone can see")
-    clear_screen()
+    #clear_screen()
     print(f"Player {turn} has placed down {selected_card}")
     if selected_card != "draw":
         output_selected_card(selected_card)
-    # card_effect(selected_card)
+        players[f"{turn - 1}"][1] -= 1
+
+    turn, selected_colour, reverse_status = card_effect(selected_card, turn)
 
     win = check_win(card_list)
 
-    if turn < num_of_players:
+    if reverse_status == False:
+        if turn < num_of_players:
+            turn += 1
+        elif turn == num_of_players:
+            turn = 1
+            round += 1
+        
+
+    #time.sleep(3)
+    if win == False:
+        print(Style.BRIGHT + f"Hand the computer to player {turn}" + Style.RESET_ALL)
+        clear_screen()
+        player_turn(turn, round, selected_card, selected_colour, stored_card, win)
+    else:
+        print("WINNER!")
+
+
+def card_effect(card, turn):
+
+    selected_colour = ""
+    reverse_status = False
+
+    if card[1:] == "2+":
+        print(f"Player {turn + 1} now has 2 extra cards")
+        players[f"{turn}"][1] += 2
+        for i in range(2):
+            card = draw_card()
+            players[f"{turn}"][0].append(card)
+    elif card[1:] == "S":
+        print(f"Player {turn + 1}'s turn has been skipped")
         turn += 1
-    elif turn == num_of_players:
-        turn = 1
-        round += 1
-
-    time.sleep(3)
-    
-    print(Style.BRIGHT + f"Hand the computer to player {turn}" + Style.RESET_ALL)
-    clear_screen()
+    elif card[1:] == "Re":
+        print("The order of turns has now been switched")
+        reverse_status = True
+    elif card[1:] == "C":
+        selected_colour = input(f"Player {turn}, choose a colour\n")
+        print(f"The colour is now {selected_colour}")
 
 
-    while win == False:
-        player_turn(turn, round, selected_card)
-
-
-
-# def card_effect(card):
-
-#     if card[1:] == "2+":
-#         players[f"{turn}"][1] += 2
-#     elif card[1:] == "S":
-#         turn += 2
-#     elif card[1:] == "Re":
-#         effect = "reverse"
-#     elif card[1:] == "C":
-#         effect = "wild card"
-#     else:
-#         card = "none"
+    return turn, selected_colour, reverse_status
     
 
 def check_win(card_list):
@@ -103,24 +119,24 @@ def output_selected_card(selected_card):
 
     card_design = find_card_design(selected_card)
     print(card_design)
+ 
 
+def get_selected_card(card_list, stored_card, turn, selected_colour, round):
 
-def get_selected_card(card_list, stored_card, turn):
     if stored_card != "":
-        print(Style.BRIGHT +f"The previous card was {stored_card}")
+        print(Style.BRIGHT + f"The previous card was {stored_card}" + Style.RESET_ALL)
     player_card = input(f"Please select what card you want to place down {card_list} or 'draw' to draw a card\n")
-
-    
-    valid_card = check_selected_card(stored_card, player_card, turn)
+    valid_card = check_selected_card(stored_card, player_card, turn, selected_colour, round)
 
     while (player_card not in card_list or valid_card == False) and player_card != "draw":
         print(Fore.RED + Style.BRIGHT + "Sorry, you can't play that card" + Style.RESET_ALL)
         player_card = input(f"Please select what card you want to place down {card_list} or 'draw' to draw a card\n")
-        valid_card = check_selected_card(stored_card, player_card, turn)
+        valid_card = check_selected_card(stored_card, player_card, turn, selected_colour, round)
 
 
     if player_card == "draw":
         new_card = draw_card()
+        players[f"{turn - 1}"][1] += 1
         card_list.append(new_card)
         print(f"Your cards are now {card_list}")
     else:
@@ -140,25 +156,36 @@ def draw_card():
     
         card = card + status
 
+
     return card
 
 
-def check_selected_card(stored_card, selected_card, turn):
+def check_selected_card(stored_card, selected_card, turn, selected_colour, round):
 
     valid_card = False
 
-    if (round == 1 and turn == 1) or stored_card == "WC" or stored_card == "draw":
-        valid_card = True
+    if stored_card != "WC":
+
+        if round == 1 and turn == 1:
+            valid_card = True
+        else:
+            if stored_card[0] == selected_card[0] or (stored_card[1:] == selected_card[1:]) or selected_card == "WC":
+                valid_card = True
+            else:
+                valid_card = False
+           
     else:
-        if (stored_card[0] == selected_card[0]) or (selected_card == "WC") or (stored_card[1:] == selected_card[1:]):
+        if selected_card[0] == selected_colour:
             valid_card = True
         else:
             valid_card = False
 
+    if round == 1:
+        if selected_card[1:] == "S" or selected_card[1:] == "Re" or selected_card[1:] == "2+" or selected_card[1:] == "C":
+                    print(Fore.RED + "Special card cannot be played during round 1")
+                    valid_card = False
 
     return valid_card
-
-        
 
 
 def output_player_cards(card_list, turn):
@@ -168,12 +195,24 @@ def output_player_cards(card_list, turn):
     for card in card_list:
         card_design = find_card_design(card)
         time.sleep(1)
-        print(card)
 
-        # if card[0] == "R":
-        #     for char in card_design:
-        #         if char == "-" or char == "|" or char == " ":
-        #             print(colorama.Back.RED + char, end = "")
+        # for line in card:
+        #     l = ""
+        #     for char in line:
+
+        #         if char == "=":
+        #             l += Style.RESET_ALL + Fore.BLUE + char
+        #         elif char in destinations:
+        #             l += Style.RESET_ALL + Back.RED + char + Style.RESET_ALL
+        #         elif char in characters:
+        #             l += Style.RESET_ALL + Fore.YELLOW + char + Style.RESET_ALL
+        #         else:
+        #             l += Style.RESET_ALL + char
+
+        #         l += " "
+
+        #     print(l)
+
 
         print(card_design)
 
@@ -181,25 +220,11 @@ def output_player_cards(card_list, turn):
 def get_card_list(generating, turn):
 
     if generating == True:
-        card_list = generate_cards()
+        card_list = generate_cards(turn)
 
-        if turn == 1:
-            players["0"][0] = card_list
-        elif turn == 2:
-            players["1"][0] = card_list
-        elif turn == 3:
-            players["2"][0] = card_list
-        elif turn == 4:
-            players["3"][0] = card_list
+        players[f"{turn - 1}"][0] = card_list
 
-    if turn == 1:
-        card_list = players["0"][0]
-    elif turn == 2:
-        card_list = players["1"][0]
-    elif turn == 3:
-        card_list = players["2"][0]
-    elif turn == 4:
-        card_list = players["3"][0]
+    card_list = players[f"{turn - 1}"][0]
     
     return card_list
 
@@ -239,13 +264,13 @@ def find_card_design(card):
     return card_design
 
 
-def generate_cards():
+def generate_cards(turn):
 
     card_list = []
 
-    for i in range(players[f"{turn - 1}"][1]):
+    for i in range(2):
+        players[f"{turn - 1}"][1] += 1
         card = draw_card()
-
         card_list.append(card)
 
     
@@ -258,10 +283,12 @@ def generate_cards():
 print("""--------------
      UNO
 --------------""")
-num_of_players = int(input("How many players are playing (pick a number from 2-4)\n"))
+num_of_players = 0
+while num_of_players < 2 or num_of_players > 4:
+    num_of_players = int(input("How many players are playing (pick a number from 2-4)\n"))
 clear_screen()
 generating = True
 players = create_players()
-player_turn(turn, round, selected_card)
+player_turn(turn, round, selected_card, selected_colour, stored_card, win)
 
 
