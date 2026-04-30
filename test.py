@@ -1,10 +1,10 @@
 ## Personal Programming Project - Yaretzi Pang
-import os, time, random, cards
+import os, time, random, cards, cards_test
 from colorama import Fore, Back, Style
 
 
-colours = ["R", "Y", "G", "B", "R", "Y", "G", "B", "R", "Y", "G", "B", "WC"]
-status_list = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "S", "2+", "Re"]
+colours = ["R", "Y", "G", "B", "R", "Y", "G", "B", "R", "Y", "G", "B", "R", "Y", "G", "B", "WC"]
+status_list = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "S", "2+", "Re", "Re", "Re", "Re", "Re", "Re", "Re", "Re", "Re", "Re", "Re", "Re", "Re", "Re", "Re", "Re", "Re", "Re", "Re", "Re", "Re", "Re"]
 numbers = 0
 turn = 1
 round = 1
@@ -12,6 +12,7 @@ win = False
 selected_card = ""
 selected_colour = ""
 stored_card = ""
+reverse_status = False
 
 
 def clear_screen():
@@ -35,7 +36,7 @@ def create_players():
     return players
 
 
-def player_turn(turn, round, selected_card, selected_colour, stored_card, win):
+def player_turn(turn, round, selected_card, selected_colour, stored_card, win, reverse_status):
 
     if round == 1:
         generating = True
@@ -44,7 +45,7 @@ def player_turn(turn, round, selected_card, selected_colour, stored_card, win):
 
 
     card_list = get_card_list(generating, turn)
-    output_player_cards(card_list, turn)
+    #output_player_cards(card_list, turn)
     if selected_card != "draw":
         stored_card = selected_card
     
@@ -54,10 +55,10 @@ def player_turn(turn, round, selected_card, selected_colour, stored_card, win):
     #clear_screen()
     print(f"Player {turn} has placed down {selected_card}")
     if selected_card != "draw":
-        output_selected_card(selected_card)
+        output_card_design(selected_card)
         players[f"{turn - 1}"][1] -= 1
 
-    turn, selected_colour, reverse_status = card_effect(selected_card, turn)
+    turn, selected_colour, reverse_status = card_effect(selected_card, turn, reverse_status)
 
     win = check_win(card_list)
 
@@ -67,21 +68,26 @@ def player_turn(turn, round, selected_card, selected_colour, stored_card, win):
         elif turn == num_of_players:
             turn = 1
             round += 1
+    else:
+        if turn == 1:
+            turn = num_of_players
+            round += 1
+        elif turn < num_of_players:
+            turn -= 1
         
 
     #time.sleep(3)
     if win == False:
         print(Style.BRIGHT + f"Hand the computer to player {turn}" + Style.RESET_ALL)
-        clear_screen()
-        player_turn(turn, round, selected_card, selected_colour, stored_card, win)
+        #clear_screen()
+        player_turn(turn, round, selected_card, selected_colour, stored_card, win, reverse_status)
     else:
         print("WINNER!")
 
 
-def card_effect(card, turn):
+def card_effect(card, turn, reverse_status):
 
     selected_colour = ""
-    reverse_status = False
 
     if card[1:] == "2+":
         print(f"Player {turn + 1} now has 2 extra cards")
@@ -94,7 +100,7 @@ def card_effect(card, turn):
         turn += 1
     elif card[1:] == "Re":
         print("The order of turns has now been switched")
-        reverse_status = True
+        reverse_status = not reverse_status
     elif card[1:] == "C":
         selected_colour = input(f"Player {turn}, choose a colour\n")
         print(f"The colour is now {selected_colour}")
@@ -113,12 +119,6 @@ def check_win(card_list):
 
 
     return win
-
-
-def output_selected_card(selected_card):
-
-    card_design = find_card_design(selected_card)
-    print(card_design)
  
 
 def get_selected_card(card_list, stored_card, turn, selected_colour, round):
@@ -193,28 +193,9 @@ def output_player_cards(card_list, turn):
     print(f"Player {turn}, your cards are:")
 
     for card in card_list:
-        card_design = find_card_design(card)
+        output_card_design(card)
         time.sleep(1)
 
-        # for line in card:
-        #     l = ""
-        #     for char in line:
-
-        #         if char == "=":
-        #             l += Style.RESET_ALL + Fore.BLUE + char
-        #         elif char in destinations:
-        #             l += Style.RESET_ALL + Back.RED + char + Style.RESET_ALL
-        #         elif char in characters:
-        #             l += Style.RESET_ALL + Fore.YELLOW + char + Style.RESET_ALL
-        #         else:
-        #             l += Style.RESET_ALL + char
-
-        #         l += " "
-
-        #     print(l)
-
-
-        print(card_design)
 
 
 def get_card_list(generating, turn):
@@ -229,46 +210,65 @@ def get_card_list(generating, turn):
     return card_list
 
 
-def find_card_design(card):
+def output_card_design(card):
     
     if card[1:] == "0":
-        card_design = cards.status_num_0
+        card_design = cards_test.status_num_0
     elif card[1:] == "1":
-        card_design = cards.status_num_1
+        card_design = cards_test.status_num_1
     elif card[1:] == "2":
-        card_design = cards.status_num_2
+        card_design = cards_test.status_num_2
     elif card[1:] == "3":
-        card_design = cards.status_num_3
+        card_design = cards_test.status_num_3
     elif card[1:] == "4":
-        card_design = cards.status_num_4
+        card_design = cards_test.status_num_4
     elif card[1:] == "5":
-        card_design = cards.status_num_5
+        card_design = cards_test.status_num_5
     elif card[1:] == "6":
-        card_design = cards.status_num_6
+        card_design = cards_test.status_num_6
     elif card[1:] == "7":
-        card_design = cards.status_num_7
+        card_design = cards_test.status_num_7
     elif card[1:] == "8":
-        card_design = cards.status_num_8
+        card_design = cards_test.status_num_8
     elif card[1:] == "9":
-        card_design = cards.status_num_9
+        card_design = cards_test.status_num_9
     elif card[1:] == "Re":
-        card_design = cards.status_reverse
+        card_design = cards_test.status_reverse
     elif card[1:] == "C":
-        card_design = cards.status_wild
+        card_design = cards_test.status_wild
     elif card[1:] == "2+":
-        card_design = cards.status_add_2
+        card_design = cards_test.status_add_2
     elif card[1:] == "S":
-        card_design = cards.status_skip
+        card_design = cards_test.status_skip
     
+    for line in card_design:
+            l = ""
+            for char in line:
 
-    return card_design
+                if char == ":":
+                    l += Style.RESET_ALL + Back.WHITE + char + Style.RESET_ALL
+
+                elif card[0] == "R" or char == "/":
+                    l += Style.RESET_ALL + Back.RED + char + Style.RESET_ALL
+                elif card[0] == "Y" or char == "]":
+                    l += Style.RESET_ALL + Back.YELLOW + char + Style.RESET_ALL
+                elif card[0] == "B" or char == ";":
+                    l += Style.RESET_ALL + Back.CYAN + char + Style.RESET_ALL
+                elif card[0] == "G" or char == "[":
+                    l += Style.RESET_ALL + Back.GREEN + char + Style.RESET_ALL
+                else:
+                        l += Style.RESET_ALL + char + Style.RESET_ALL
+                
+
+
+            print(l)
 
 
 def generate_cards(turn):
 
     card_list = []
 
-    for i in range(2):
+    for i in range(7):
         players[f"{turn - 1}"][1] += 1
         card = draw_card()
         card_list.append(card)
@@ -289,6 +289,6 @@ while num_of_players < 2 or num_of_players > 4:
 clear_screen()
 generating = True
 players = create_players()
-player_turn(turn, round, selected_card, selected_colour, stored_card, win)
+player_turn(turn, round, selected_card, selected_colour, stored_card, win, reverse_status)
 
 
