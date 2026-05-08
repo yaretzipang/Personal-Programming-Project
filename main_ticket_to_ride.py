@@ -25,12 +25,13 @@ map = [['  ','a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q'
        
 characters = "abcdefghijklmnopqrstuvwxyz 1 2 3 4 5 6 7 8 91011121314151617181920"
 colours = ["blue", "red", "green", "yellow", "black"]
-train_cards = ["B","B","B","B","B","B","B","B","B","B","B","B", "P","P","P","P","P","P","P","P","P","P","P","P"]
+train_cards = ["B","B","B","B","B","B","B","B","B","B","B","B","P","P","P","P","P","P","P","P","P","P","P","P"]
 cards = "BPTRFHCL"
 destinations = "@&{%}![^$|#]?(>/+<*)-;~:"
 turn = 1
 round = 1
 generate = True
+
 
 def clear_screen():
 
@@ -38,7 +39,7 @@ def clear_screen():
     for i in range(3):
         print(".")
         time.sleep(1)
-    os.system("clear")
+    os.system("cls")
 
 
 
@@ -50,8 +51,7 @@ def create_players():
 
         player_name = input(Style.BRIGHT + f"What is player {i + 1}'s name?\n" + Style.RESET_ALL)
         
-        players.update({f"{i}": [player_name, colours[i], 45, []]})
-        print(players[f"{i}"][3])
+        players.update({f"{i}": [player_name, colours[i], 0, 45, []]})
 
         #time.sleep(1)
 
@@ -62,27 +62,74 @@ def create_players():
 
 def print_scoreboard(players):
 
+    print(Style.BRIGHT + Fore.RED + "This is the scoreboard" + Style.RESET_ALL)
+
     length = 0
 
     for i in range(num_of_players):
         if len(players[f"{i}"][0]) > length:
             length = len(players[f"{i}"][0])
 
-    spaces = length + 6
+    spaces = length + 4
 
-    print(Style.BRIGHT + f"""NUMBER    NAME{" " * (spaces - 4)}COLOUR      SCORE""" + Style.RESET_ALL)
-    print(f"==============={spaces * "="}")
+    print(Style.BRIGHT + f"""NUMBER    NAME{" " * (length)}SCORE    COLOUR""" + Style.RESET_ALL)
+    print(f"{(spaces + 25)* "="}")
 
     for i in range(num_of_players):
-        print(f"{i + 1}         {players[f"{i}"][0]}{" " * (spaces - len(players[f"{i}"][0]))}0")
-        print(f"---------------{spaces * "-"}")
+        colour_spaces = len(f"{players[f"{i}"][2]}")
+        print(f"{i + 1}         {players[f"{i}"][0]}{" " * (spaces - len(players[f"{i}"][0]))}{players[f"{i}"][2]}{(colour_spaces + 7) * " "}{players[f"{i}"][1]}")
+        print(f"{(spaces + 25 )* "-"}")
+    
+    print("\n")
 
+
+def player_turn(players, turn, generate):
+
+    if round == 1:
+        generate == True
+    else:
+        generate = False
+
+
+    time.sleep(1)
+    chosen_card = choose_destination_card(generate)
+        
+
+def choose_destination_card(generate):
+    
+    for i in range(num_of_players):
+
+        chosen_card = 0
+
+        card_1 = print_destination_cards(generate, turn)
+        card_2 = print_destination_cards(generate, turn)
+        card_3 = print_destination_cards(generate, turn)
+
+
+        while chosen_card < 1 or chosen_card > 3:
+
+            chosen_card = int(input(f"{players[f"{i}"][0]}, pick 1 of the 3 destination cards (1, 2, 3)\n"))
+
+            if chosen_card == 1:
+                players[f"{i}"][4].append(card_1)
+            elif chosen_card == 2:
+                players[f"{i}"][4].append(card_2)
+            elif chosen_card == 3:
+                players[f"{i}"][4].append(card_3)
+            else:
+                print("Sorry, you can't choose that card")
+                chosen_card = int(input(f"{players[f"{i}"][0]}, pick 1 of the 3 destination cards (1, 2, 3)\n"))
+
+        time.sleep(1)
+
+    return chosen_card
 
 
 def print_destination_cards(generate, turn):
 
     if generate == True:
         card = random.choice(ticket_to_ride_cards.destination_cards)
+        ticket_to_ride_cards.destination_cards.remove(card)
     
 
     destination_str = ""
@@ -116,48 +163,6 @@ def print_destination_cards(generate, turn):
     return card
 
 
-def player_turn(players, turn, generate):
-
-    if round == 1:
-        generate == True
-    else:
-        generate = False
-
-    chosen_card = choose_destination_card(generate)
-        
-    print(players)
-        
-
-def choose_destination_card(generate):
-    
-    for i in range(num_of_players):
-
-        chosen_card = 0
-
-        card_1 = print_destination_cards(generate, turn)
-        card_2 = print_destination_cards(generate, turn)
-        card_3 = print_destination_cards(generate, turn)
-
-
-        while chosen_card < 1 or chosen_card > 3:
-
-            chosen_card = int(input(f"{players[f"{i}"][0]}, pick 1 of the 3 destination cards (1, 2, 3)\n"))
-
-            if chosen_card == 1:
-                players[f"{i}"][3].append(card_1)
-                ticket_to_ride_cards.destination_cards.remove(card_1)
-            elif chosen_card == 2:
-                players[f"{i}"][3].append(card_2)
-                ticket_to_ride_cards.destination_cards.remove(card_2)
-            elif chosen_card == 3:
-                players[f"{i}"][3].append(card_3)
-                ticket_to_ride_cards.destination_cards.remove(card_3)
-            else:
-                print("Sorry, you can't choose that card")
-                chosen_card = int(input(f"{players[f"{i}"][0]}, pick 1 of the 3 destination cards (1, 2, 3)\n"))
-
-    return chosen_card
-
 def print_board():
     for line in map:
         l = ""
@@ -186,15 +191,17 @@ def print_board():
             
             l += "  "
         print(l + Style.RESET_ALL)
+    print("\n")
 
 print(Style.BRIGHT + """----------------------
     TICKET TO RIDE
 ----------------------""")
 num_of_players = 0
 while num_of_players < 2 or num_of_players > 5:
-    num_of_players = int(input("How many players are playing (pick a number from 2-4)\n" + Style.RESET_ALL))
+    num_of_players = int(input("How many players are playing (pick a number from 2-5)\n" + Style.RESET_ALL))
 players = create_players()
 clear_screen()
-print_board()
 print_scoreboard(players)
+time.sleep(1)
+print_board()
 player_turn(players, turn, generate)
