@@ -102,7 +102,9 @@ def choose_destination_card(generate):
         chosen_card = 0
 
         card_1 = print_destination_cards(generate, turn)
+        time.sleep(1)
         card_2 = print_destination_cards(generate, turn)
+        time.sleep(1)
         card_3 = print_destination_cards(generate, turn)
 
 
@@ -196,9 +198,20 @@ def print_board():
 print(Style.BRIGHT + """----------------------
     TICKET TO RIDE
 ----------------------""")
+
 num_of_players = 0
-while num_of_players < 2 or num_of_players > 5:
-    num_of_players = int(input("How many players are playing (pick a number from 2-5)\n" + Style.RESET_ALL))
+valid_players = True
+while valid_players == True:
+    try:
+        num_of_players = int(input("How many players are playing (pick a number from 2-5)\n" + Style.RESET_ALL))
+ 
+    except(TypeError, ValueError):
+        num_of_players = int(input("How many players are playing (pick a number from 2-5)\n"))
+
+    if num_of_players >= 2 and num_of_players <= 5:
+            valid_players = False
+
+
 players = create_players()
 clear_screen()
 print_scoreboard(players)

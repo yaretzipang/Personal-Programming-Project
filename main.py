@@ -16,25 +16,31 @@ reverse_status = False
 
 def intro():
 
-    print(Style.BRIGHT + "The aim of the game is to lose all your cards")
-    time.sleep(1)
-    print(Fore.WHITE + "Cards are represented with strings, the first character is the colour, and the second character is the number of status\n")
-    time.sleep(1)
-    print(Fore.RED + "R - Red\n" + Fore.YELLOW + "Y - Yellow\n" + Fore.CYAN + "B - Blue\n" + Fore.GREEN+ "G - Green")
-    time.sleep(1)
-    print(Fore.CYAN + "This is an example of a BLUE card, represented by the letter string 'B3'")
-    output_card_design('B3')
-    time.sleep(1)
-    print(Style.BRIGHT + Fore.WHITE + "Some of the special cards include...")
-    time.sleep(1)
-    output_card_design('YRe')
-    print("Yellow Reverse (YRe)")
-    time.sleep(1)
-    output_card_design('R2+')
-    print("Red Add 2 (R2+)")
-    time.sleep(1)
-    output_card_design('GS')
-    print("Yellow Reverse (GS)")
+    intro_list = [Style.BRIGHT + "The aim of the game is to lose all your cards", 
+                  "Cards are represented with strings, the first character is the colour, and the second character is the number of status\n",
+                  Fore.RED + "R - Red\n" + Fore.YELLOW + "Y - Yellow\n" + Fore.CYAN + "B - Blue\n" + Fore.GREEN+ "G - Green\n",
+                  Fore.CYAN + "This is an example of a BLUE card, represented by the letter string 'B3'",
+                  Style.BRIGHT + Fore.WHITE + "Some of the special cards include...",
+                  "Reverse (YRe)",
+                  "Add 2 (R2+)",
+                  "Skip (GS)"]
+    
+    cards_dic = {'3': 'B3',
+                '4': 'YRe',
+                '5': 'R2+',
+                '6': 'GS'}
+
+    for i in range(8):
+        print(intro_list[i])
+
+        time.sleep(1)
+
+        if f'{i}' in cards_dic:
+            output_card_design(cards_dic[f'{i}'])
+
+
+
+    #clear_screen()
     print("""Rules:
 1. You can only place a card on another card with the SAME NUMBER OR COLOUR
 2. """)
@@ -45,7 +51,7 @@ def clear_screen():
     for i in range(3):
         print(".")
         time.sleep(1)
-    os.system("clear")
+    os.system("cls")
 
 
 def create_players():
@@ -307,11 +313,28 @@ def generate_cards(turn):
 print("""--------------
      UNO
 --------------""")
-intro()
-num_of_players = input("How many players are playing (pick a number from 2-4)\n")
-while num_of_players < 2 or num_of_players > 4 or not num_of_players.isdigit():
-    num_of_players = input("How many players are playing (pick a number from 2-4)\n")
-num_of_players = int(num_of_players)
+intro_status = ""
+while intro_status != "Y" and intro_status != "N":
+    intro_status = input("Would you like an intro to the game? (Y/N)\n").upper()
+
+if intro_status == "Y":
+    intro()
+
+
+num_of_players = 0
+valid_players = True
+while valid_players == True:
+    try:
+        num_of_players = int(input("How many players are playing (pick a number from 2-4)\n"))
+ 
+    except(TypeError, ValueError):
+        num_of_players = int(input("How many players are playing (pick a number from 2-4)\n"))
+
+    if num_of_players >= 2 and num_of_players <= 4:
+            valid_players = False
+
+
+
 clear_screen()
 generating = True
 players = create_players()
