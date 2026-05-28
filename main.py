@@ -4,7 +4,7 @@ from colorama import Fore, Back, Style
 
 
 colours = ["R", "Y", "G", "B", "R", "Y", "G", "B", "R", "Y", "G", "B", "R", "Y", "G", "B", "WC"]
-status_list = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "S", "2+", "Re", "Re", "Re", "Re", "Re", "Re", "Re", "Re", "Re", "Re", "Re", "Re", "Re", "Re", "Re", "Re", "Re", "Re", "Re", "Re", "Re", "Re"]
+status_list = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "S", "2+", "Re"]
 numbers = 0
 turn = 1
 round = 1
@@ -14,6 +14,30 @@ selected_colour = ""
 stored_card = ""
 reverse_status = False
 
+def intro():
+
+    print(Style.BRIGHT + "The aim of the game is to lose all your cards")
+    time.sleep(1)
+    print(Fore.WHITE + "Cards are represented with strings, the first character is the colour, and the second character is the number of status\n")
+    time.sleep(1)
+    print(Fore.RED + "R - Red\n" + Fore.YELLOW + "Y - Yellow\n" + Fore.CYAN + "B - Blue\n" + Fore.GREEN+ "G - Green")
+    time.sleep(1)
+    print(Fore.CYAN + "This is an example of a BLUE card, represented by the letter string 'B3'")
+    output_card_design('B3')
+    time.sleep(1)
+    print(Style.BRIGHT + Fore.WHITE + "Some of the special cards include...")
+    time.sleep(1)
+    output_card_design('YRe')
+    print("Yellow Reverse (YRe)")
+    time.sleep(1)
+    output_card_design('R2+')
+    print("Red Add 2 (R2+)")
+    time.sleep(1)
+    output_card_design('GS')
+    print("Yellow Reverse (GS)")
+    print("""Rules:
+1. You can only place a card on another card with the SAME NUMBER OR COLOUR
+2. """)
 
 def clear_screen():
 
@@ -45,14 +69,14 @@ def player_turn(turn, round, selected_card, selected_colour, stored_card, win, r
 
 
     card_list = get_card_list(generating, turn)
-    #output_player_cards(card_list, turn)
+    output_player_cards(card_list, turn)
     if selected_card != "draw":
         stored_card = selected_card
     
     selected_card, card_list = get_selected_card(card_list, stored_card, turn, selected_colour, round)
-    #time.sleep(1)
+    time.sleep(1)
     print("Place the computer where everyone can see")
-    #clear_screen()
+    clear_screen()
     print(f"Player {turn} has placed down {selected_card}")
     if selected_card != "draw":
         output_card_design(selected_card)
@@ -76,10 +100,10 @@ def player_turn(turn, round, selected_card, selected_colour, stored_card, win, r
             turn -= 1
         
 
-    #time.sleep(3)
+    time.sleep(3)
     if win == False:
         print(Style.BRIGHT + f"Hand the computer to player {turn}" + Style.RESET_ALL)
-        #clear_screen()
+        clear_screen()
         player_turn(turn, round, selected_card, selected_colour, stored_card, win, reverse_status)
     else:
         print("WINNER!")
@@ -283,9 +307,11 @@ def generate_cards(turn):
 print("""--------------
      UNO
 --------------""")
-num_of_players = 0
-while num_of_players < 2 or num_of_players > 4:
-    num_of_players = int(input("How many players are playing (pick a number from 2-4)\n"))
+intro()
+num_of_players = input("How many players are playing (pick a number from 2-4)\n")
+while num_of_players < 2 or num_of_players > 4 or not num_of_players.isdigit():
+    num_of_players = input("How many players are playing (pick a number from 2-4)\n")
+num_of_players = int(num_of_players)
 clear_screen()
 generating = True
 players = create_players()
