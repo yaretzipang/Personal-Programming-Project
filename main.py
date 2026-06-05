@@ -23,14 +23,16 @@ def intro():
                   Style.BRIGHT + Fore.WHITE + "Some of the special cards include...",
                   "Reverse (YRe)",
                   "Add 2 (R2+)",
-                  "Skip (GS)"]
+                  "Skip (GS)",
+                  "Wild Card (WC)"]
     
     cards_dic = {'3': 'B3',
                 '4': 'YRe',
                 '5': 'R2+',
-                '6': 'GS'}
+                '6': 'GS',
+                '7': 'WC'}
 
-    for i in range(8):
+    for i in range(9):
         print(intro_list[i])
 
         time.sleep(1)
@@ -41,11 +43,16 @@ def intro():
 
 
     #clear_screen()
-    print("""Rules:
-1. You can only place a card on another card with the SAME NUMBER OR COLOUR
-2. """)
+    print("""\nRules:
+1. You can only place a card on another card with the SAME NUMBER, COLOUR OR ACTION
+2. If you have no cards to play or you choose to not play a card, you must draw a card
+3. Only 1 card can be placed at a time
+4. The game ends when a player has no cards\n""")
+    
+    move_on = input("The game will proceed when you press ENTER\n" + Style.RESET_ALL)
+    clear_screen()
 
-def clear_screen():
+def clear_screen(): 
 
     print("(clearing screen)")
     for i in range(3):
@@ -292,6 +299,8 @@ def output_card_design(card):
 
 
             print(l)
+    
+    print("")
 
 
 def generate_cards(turn):
@@ -334,7 +343,7 @@ while valid_players == True:
             valid_players = False
 
 
-
+print("The game is now starting...Please give the computer to Player 1")
 clear_screen()
 generating = True
 players = create_players()
