@@ -42,7 +42,7 @@ def intro():
 
 
 
-    #clear_screen()
+
     print("""\nRules:
 1. You can only place a card on another card with the SAME NUMBER, COLOUR OR ACTION
 2. If you have no cards to play or you choose to not play a card, you must draw a card
@@ -139,7 +139,7 @@ def card_effect(card, turn, reverse_status):
         print("The order of turns has now been switched")
         reverse_status = not reverse_status
     elif card[1:] == "C":
-        selected_colour = input(f"Player {turn}, choose a colour\n")
+        selected_colour = input(f"Player {turn}, choose a colour\n").upper()
         print(f"The colour is now {selected_colour}")
 
 
@@ -162,8 +162,7 @@ def get_selected_card(card_list, stored_card, turn, selected_colour, round):
 
     if stored_card != "":
         print(Style.BRIGHT + f"The previous card was {stored_card}" + Style.RESET_ALL)
-    player_card = input(f"Please select what card you want to place down {card_list} or 'draw' to draw a card\n")
-    valid_card = check_selected_card(stored_card, player_card, turn, selected_colour, round)
+    player_card = "draw"
 
     while (player_card not in card_list or valid_card == False) and player_card != "draw":
         print(Fore.RED + Style.BRIGHT + "Sorry, you can't play that card" + Style.RESET_ALL)
