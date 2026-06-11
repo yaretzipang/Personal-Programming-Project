@@ -33,8 +33,7 @@ def intro():
                 '7': 'WC'}
 
     for i in range(9):
-        print(intro_list[i])
-
+        print(intro_list[i], "\n")
         time.sleep(1)
 
         if f'{i}' in cards_dic:
@@ -49,7 +48,7 @@ def intro():
 3. Only 1 card can be placed at a time
 4. The game ends when a player has no cards\n""")
     
-    move_on = input("The game will proceed when you press ENTER\n" + Style.RESET_ALL)
+    input("The game will proceed when you press ENTER\n" + Style.RESET_ALL)
     clear_screen()
 
 def clear_screen(): 
@@ -64,19 +63,52 @@ def clear_screen():
 def create_players():
 
     players = {}
+    num_of_cards_list = []
 
     for i in range(num_of_players):
-        
-        players.update({f"{i}": [[], 0]})
+
+        player_name = input(Style.BRIGHT + f"What is player {i + 1}'s name?\n" + Style.RESET_ALL)
+        players.update({f"{i}": [[], 7, player_name]})
+
+        num_of_cards_list.append(players[f"{i}"][1])
 
 
-    return players
+    return players, num_of_cards_list
+
+
+def print_scoreboard(players):
+
+    print(Style.BRIGHT + Fore.RED + "This is the scoreboard" + Style.RESET_ALL)
+
+    length = 0
+
+    for i in range(num_of_players):
+        if len(players[f"{i}"][2]) > length:
+            length = len(players[f"{i}"][2])
+
+    spaces = length + 4
+
+    print(Style.BRIGHT + f"""NUMBER    NAME{" " * (length)}NUMBER OF CARDS""" + Style.RESET_ALL)
+    print(f"{(spaces + 25)* "="}")
+
+    for i in range(num_of_players):
+
+        while num_of_cards_list[i] != min(num_of_cards_list):
+            i += 1
+
+        print(f"{i + 1}         {players[f"{i}"][2]}{" " * (spaces - len(players[f"{i}"][2]))}{players[f"{i}"][1]}")
+        print(f"{(spaces + 25 )* "-"}")
+    
+    print("\n")
 
 
 def player_turn(turn, round, selected_card, selected_colour, stored_card, win, reverse_status):
 
+    print_scoreboard(players)
+
     if round == 1:
         generating = True
+        print("The game is now starting...Please give the computer to Player 1")
     else:
         generating = False
 
@@ -91,6 +123,7 @@ def player_turn(turn, round, selected_card, selected_colour, stored_card, win, r
     print("Place the computer where everyone can see")
     clear_screen()
     print(f"Player {turn} has placed down {selected_card}")
+
     if selected_card != "draw":
         output_card_design(selected_card)
         players[f"{turn - 1}"][1] -= 1
@@ -162,7 +195,8 @@ def get_selected_card(card_list, stored_card, turn, selected_colour, round):
 
     if stored_card != "":
         print(Style.BRIGHT + f"The previous card was {stored_card}" + Style.RESET_ALL)
-    player_card = "draw"
+    
+    player_card = ""
 
     while (player_card not in card_list or valid_card == False) and player_card != "draw":
         print(Fore.RED + Style.BRIGHT + "Sorry, you can't play that card" + Style.RESET_ALL)
@@ -306,8 +340,7 @@ def generate_cards(turn):
 
     card_list = []
 
-    for i in range(7):
-        players[f"{turn - 1}"][1] += 1
+    for i in range(players[f"{turn - 1}"][1]):
         card = draw_card()
         card_list.append(card)
 
@@ -342,10 +375,9 @@ while valid_players == True:
             valid_players = False
 
 
-print("The game is now starting...Please give the computer to Player 1")
 clear_screen()
 generating = True
-players = create_players()
+players, num_of_cards_list = create_players()
 player_turn(turn, round, selected_card, selected_colour, stored_card, win, reverse_status)
 
 
