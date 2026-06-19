@@ -1,5 +1,5 @@
 ## Personal Programming Project - Yaretzi Pang
-import os, time, random, cards, cards_test
+import os, time, random, cards_test
 from colorama import Fore, Back, Style
 
 

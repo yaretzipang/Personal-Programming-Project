@@ -4,7 +4,7 @@ from colorama import Fore, Back, Style
 
 
 colours = ["R", "Y", "G", "B", "R", "Y", "G", "B", "R", "Y", "G", "B", "R", "Y", "G", "B", "WC"]
-status_list = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "S", "2+", "Re"]
+status_list = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "S", "2+", "Re", "S", "S", "S", "S", "S", "S", "S", "S", "S", "S", "S", "S", "S", "S", "S", "S", "S", "S"]
 numbers = 0
 turn = 1
 round = 1
@@ -21,10 +21,10 @@ def intro():
                   Fore.RED + "R - Red\n" + Fore.YELLOW + "Y - Yellow\n" + Fore.CYAN + "B - Blue\n" + Fore.GREEN+ "G - Green\n",
                   Fore.CYAN + "This is an example of a BLUE card, represented by the letter string 'B3'",
                   Style.BRIGHT + Fore.WHITE + "Some of the special cards include...",
-                  "Reverse (YRe)",
-                  "Add 2 (R2+)",
-                  "Skip (GS)",
-                  "Wild Card (WC)"]
+                  "Reverse (YRe) - reverses the order of turns",
+                  "Add 2 (R2+) - adds 2 cards to the next players deck",
+                  "Skip (GS) - skips the next player's turn",
+                  "Wild Card (WC) - allows the player to choose a random colour"]
     
     cards_dic = {'3': 'B3',
                 '4': 'YRe',
@@ -32,11 +32,11 @@ def intro():
                 '6': 'GS',
                 '7': 'WC'}
 
-    for i in range(9):
-        print(intro_list[i], "\n")
+    for i in range(9): 
+        print(intro_list[i], "\n") #iterate through each item in intro_list, reduce need for multiple print statements
         time.sleep(1)
 
-        if f'{i}' in cards_dic:
+        if f'{i}' in cards_dic: #check if item position correlates with cards_dictionary
             output_card_design(cards_dic[f'{i}'])
 
 
@@ -53,10 +53,10 @@ def intro():
 
 def clear_screen(): 
 
-    print("(clearing screen)")
+    print(Style.RESET_ALL + "(clearing screen)")
     for i in range(3):
         print(".")
-        time.sleep(1)
+        #time.sleep(1)
     os.system("cls")
 
 
@@ -64,13 +64,21 @@ def create_players():
 
     players = {}
     num_of_cards_list = []
+    player_names = []
 
     for i in range(num_of_players):
-
+        
         player_name = input(Style.BRIGHT + f"What is player {i + 1}'s name?\n" + Style.RESET_ALL)
-        players.update({f"{i}": [[], 7, player_name]})
+
+        while player_name.upper() in player_names:
+            print(Style.BRIGHT + Fore.RED + "That's already someone's name!" + Style.RESET_ALL)
+            player_name = input(Style.BRIGHT + f"What is player {i + 1}'s name?\n" + Style.RESET_ALL)
+
+        players.update({f"{i}": [[], 7, player_name]}) #player dictionary: player number, cards, number of cards, name
 
         num_of_cards_list.append(players[f"{i}"][1])
+
+        player_names.append(player_name.upper())
 
 
     return players, num_of_cards_list
@@ -83,7 +91,7 @@ def print_scoreboard(players):
     length = 0
 
     for i in range(num_of_players):
-        if len(players[f"{i}"][2]) > length:
+        if len(players[f"{i}"][2]) > length: #changes length according to the longest name
             length = len(players[f"{i}"][2])
 
     spaces = length + 4
@@ -114,17 +122,17 @@ def player_turn(turn, round, selected_card, selected_colour, stored_card, win, r
 
 
     card_list = get_card_list(generating, turn)
-    output_player_cards(card_list, turn)
-    if selected_card != "draw":
+    #output_player_cards(card_list, turn)
+    if selected_card != "DRAW":
         stored_card = selected_card
     
-    selected_card, card_list = get_selected_card(card_list, stored_card, turn, selected_colour, round)
-    time.sleep(1)
+    selected_card, card_list = get_selected_card(card_list, stored_card, turn, selected_colour, round) #ask player to choose card
+    #time.sleep(1)
     print("Place the computer where everyone can see")
     clear_screen()
     print(f"Player {turn} has placed down {selected_card}")
 
-    if selected_card != "draw":
+    if selected_card != "DRAW":
         output_card_design(selected_card)
         players[f"{turn - 1}"][1] -= 1
 
@@ -146,13 +154,26 @@ def player_turn(turn, round, selected_card, selected_colour, stored_card, win, r
             turn -= 1
         
 
-    time.sleep(3)
+    #time.sleep(3)
     if win == False:
         print(Style.BRIGHT + f"Hand the computer to player {turn}" + Style.RESET_ALL)
         clear_screen()
         player_turn(turn, round, selected_card, selected_colour, stored_card, win, reverse_status)
     else:
-        print("WINNER!")
+        for i in range(3):
+            print(".")
+        print(Style.BRIGHT + Fore.RED + f"Player {turn-1} has no cards left!")
+        print(Style.BRIGHT + Fore.YELLOW + r""" .----------------.  .----------------.  .----------------.   .----------------.  .----------------.  .-----------------.
+| .--------------. || .--------------. || .--------------. | | .--------------. || .--------------. || .--------------. |
+| |  ____  ____  | || |     ____     | || | _____  _____ | | | | _____  _____ | || |     _____    | || | ____  _____  | |
+| | |_  _||_  _| | || |   .'    `.   | || ||_   _||_   _|| | | ||_   _||_   _|| || |    |_   _|   | || ||_   \|_   _| | |
+| |   \ \  / /   | || |  /  .--.  \  | || |  | |    | |  | | | |  | | /\ | |  | || |      | |     | || |  |   \ | |   | |
+| |    \ \/ /    | || |  | |    | |  | || |  | '    ' |  | | | |  | |/  \| |  | || |      | |     | || |  | |\ \| |   | |
+| |    _|  |_    | || |  \  `--'  /  | || |   \ `--' /   | | | |  |   /\   |  | || |     _| |_    | || | _| |_\   |_  | |
+| |   |______|   | || |   `.____.'   | || |    `.__.'    | | | |  |__/  \__|  | || |    |_____|   | || ||_____|\____| | |
+| |              | || |              | || |              | | | |              | || |              | || |              | |
+| '--------------' || '--------------' || '--------------' | | '--------------' || '--------------' || '--------------' |
+ '----------------'  '----------------'  '----------------'   '----------------'  '----------------'  '----------------' """)
 
 
 def card_effect(card, turn, reverse_status):
@@ -172,7 +193,11 @@ def card_effect(card, turn, reverse_status):
         print("The order of turns has now been switched")
         reverse_status = not reverse_status
     elif card[1:] == "C":
-        selected_colour = input(f"Player {turn}, choose a colour\n").upper()
+        selected_colour = ""
+
+        while not selected_colour in colours:
+            selected_colour = input(f"Player {turn}, choose a colour (R, Y, G, B)\n").upper()
+
         print(f"The colour is now {selected_colour}")
 
 
@@ -196,15 +221,17 @@ def get_selected_card(card_list, stored_card, turn, selected_colour, round):
     if stored_card != "":
         print(Style.BRIGHT + f"The previous card was {stored_card}" + Style.RESET_ALL)
     
-    player_card = ""
+    player_card = input(f"Please select what card you want to place down {card_list} or 'DRAW' to draw a card\n")
+    valid_card = check_selected_card(stored_card, player_card, turn, selected_colour, round)
 
-    while (player_card not in card_list or valid_card == False) and player_card != "draw":
+
+    while (player_card not in card_list or valid_card == False) and player_card != "DRAW":
         print(Fore.RED + Style.BRIGHT + "Sorry, you can't play that card" + Style.RESET_ALL)
-        player_card = input(f"Please select what card you want to place down {card_list} or 'draw' to draw a card\n")
+        player_card = input(f"Please select what card you want to place down {card_list} or 'DRAW' to draw a card\n")
         valid_card = check_selected_card(stored_card, player_card, turn, selected_colour, round)
 
 
-    if player_card == "draw":
+    if player_card == "DRAW":
         new_card = draw_card()
         players[f"{turn - 1}"][1] += 1
         card_list.append(new_card)
@@ -239,13 +266,17 @@ def check_selected_card(stored_card, selected_card, turn, selected_colour, round
         if round == 1 and turn == 1:
             valid_card = True
         else:
-            if stored_card[0] == selected_card[0] or (stored_card[1:] == selected_card[1:]) or selected_card == "WC":
+            if stored_card[0] == selected_card[0] or (stored_card[1:] == selected_card[1:]) or selected_card == "WC" or stored_card == "":
                 valid_card = True
             else:
                 valid_card = False
-           
+
+    elif stored_card == "":
+        valid_card = True
+
     else:
-        if selected_card[0] == selected_colour:
+        print(f"The colour chosen was '{selected_colour}'")
+        if selected_card[0] == selected_colour or selected_card == "WC":
             valid_card = True
         else:
             valid_card = False
@@ -316,20 +347,19 @@ def output_card_design(card):
             for char in line:
 
                 if char == ":":
-                    l += Style.RESET_ALL + Back.WHITE + char + Style.RESET_ALL
+                    l += Back.WHITE
 
                 elif card[0] == "R" or char == "/":
-                    l += Style.RESET_ALL + Back.RED + char + Style.RESET_ALL
+                    l += Back.RED
                 elif card[0] == "Y" or char == "]":
-                    l += Style.RESET_ALL + Back.YELLOW + char + Style.RESET_ALL
+                    l += Back.YELLOW
                 elif card[0] == "B" or char == ";":
-                    l += Style.RESET_ALL + Back.CYAN + char + Style.RESET_ALL
+                    l += Back.CYAN
                 elif card[0] == "G" or char == "[":
-                    l += Style.RESET_ALL + Back.GREEN + char + Style.RESET_ALL
-                else:
-                        l += Style.RESET_ALL + char + Style.RESET_ALL
-                
+                    l += Back.GREEN
 
+                
+                l += char + Style.RESET_ALL
 
             print(l)
     
@@ -351,28 +381,37 @@ def generate_cards(turn):
 
 
 
-print("""--------------
-     UNO
---------------""")
+print(Style.BRIGHT + r""" .----------------.  .-----------------. .----------------. 
+| .--------------. || .--------------. || .--------------. |
+| | _____  _____ | || | ____  _____  | || |     ____     | |
+| ||_   _||_   _|| || ||_   \|_   _| | || |   .'    `.   | |
+| |  | |    | |  | || |  |   \ | |   | || |  /  .--.  \  | |
+| |  | '    ' |  | || |  | |\ \| |   | || |  | |    | |  | |
+| |   \ `--' /   | || | _| |_\   |_  | || |  \  `--'  /  | |
+| |    `.__.'    | || ||_____|\____| | || |   `.____.'   | |
+| |              | || |              | || |              | |
+| '--------------' || '--------------' || '--------------' |
+ '----------------'  '----------------'  '----------------' """)
+
 intro_status = ""
 while intro_status != "Y" and intro_status != "N":
-    intro_status = input("Would you like an intro to the game? (Y/N)\n").upper()
+    intro_status = input(Fore.CYAN + "Would you like an intro to the game? (Y/N)\n").upper()
 
 if intro_status == "Y":
     intro()
 
 
 num_of_players = 0
-valid_players = True
-while valid_players == True:
+valid_players = False
+while not valid_players:
     try:
-        num_of_players = int(input("How many players are playing (pick a number from 2-4)\n"))
+        num_of_players = int(input(Style.RESET_ALL + "How many players are playing (pick a number from 2-4)\n"))
  
     except(TypeError, ValueError):
-        num_of_players = int(input("How many players are playing (pick a number from 2-4)\n"))
+        continue
 
     if num_of_players >= 2 and num_of_players <= 4:
-            valid_players = False
+            valid_players = True
 
 
 clear_screen()
