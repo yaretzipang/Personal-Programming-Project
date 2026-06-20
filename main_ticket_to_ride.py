@@ -109,18 +109,22 @@ def choose_destination_card(generate):
 
 
         while chosen_card < 1 or chosen_card > 3:
-
-            chosen_card = int(input(f"{players[f"{i}"][0]}, pick 1 of the 3 destination cards (1, 2, 3)\n"))
-
-            if chosen_card == 1:
-                players[f"{i}"][4].append(card_1)
-            elif chosen_card == 2:
-                players[f"{i}"][4].append(card_2)
-            elif chosen_card == 3:
-                players[f"{i}"][4].append(card_3)
-            else:
-                print("Sorry, you can't choose that card")
+            try:
                 chosen_card = int(input(f"{players[f"{i}"][0]}, pick 1 of the 3 destination cards (1, 2, 3)\n"))
+
+                if chosen_card == 1:
+                    players[f"{i}"][4].append(card_1)
+                elif chosen_card == 2:
+                    players[f"{i}"][4].append(card_2)
+                elif chosen_card == 3:
+                    players[f"{i}"][4].append(card_3)
+                else:
+                    print("Sorry, you can't choose that card")
+                    chosen_card = int(input(f"{players[f"{i}"][0]}, pick 1 of the 3 destination cards (1, 2, 3)\n"))
+
+            except(TypeError, ValueError):
+                continue
+
 
         time.sleep(1)
 
@@ -206,15 +210,20 @@ while valid_players == True:
         num_of_players = int(input("How many players are playing (pick a number from 2-5)\n" + Style.RESET_ALL))
  
     except(TypeError, ValueError):
-        num_of_players = int(input("How many players are playing (pick a number from 2-5)\n"))
+        continue
 
     if num_of_players >= 2 and num_of_players <= 5:
             valid_players = False
 
+board_printing = ""
+while board_printing != "Y" and board_printing != "N":
+    board_printing = input("Would you like to see the board? (Y/N)\n").upper()
+
+if board_printing == "Y":
+    print_board()
 
 players = create_players()
 clear_screen()
 print_scoreboard(players)
 time.sleep(1)
-print_board()
 player_turn(players, turn, generate)

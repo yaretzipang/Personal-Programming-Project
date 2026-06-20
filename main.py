@@ -56,8 +56,8 @@ def clear_screen():
     print(Style.RESET_ALL + "(clearing screen)")
     for i in range(3):
         print(".")
-        #time.sleep(1)
-    os.system("cls")
+        time.sleep(1)
+    os.system("clear")
 
 
 def create_players():
@@ -122,12 +122,12 @@ def player_turn(turn, round, selected_card, selected_colour, stored_card, win, r
 
 
     card_list = get_card_list(generating, turn)
-    #output_player_cards(card_list, turn)
+    output_player_cards(card_list, turn)
     if selected_card != "DRAW":
         stored_card = selected_card
     
     selected_card, card_list = get_selected_card(card_list, stored_card, turn, selected_colour, round) #ask player to choose card
-    #time.sleep(1)
+    time.sleep(1)
     print("Place the computer where everyone can see")
     clear_screen()
     print(f"Player {turn} has placed down {selected_card}")
@@ -154,7 +154,7 @@ def player_turn(turn, round, selected_card, selected_colour, stored_card, win, r
             turn -= 1
         
 
-    #time.sleep(3)
+    time.sleep(3)
     if win == False:
         print(Style.BRIGHT + f"Hand the computer to player {turn}" + Style.RESET_ALL)
         clear_screen()
@@ -418,5 +418,3 @@ clear_screen()
 generating = True
 players, num_of_cards_list = create_players()
 player_turn(turn, round, selected_card, selected_colour, stored_card, win, reverse_status)
-
-
