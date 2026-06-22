@@ -92,7 +92,7 @@ def player_turn(players, turn, generate):
 
 
     time.sleep(1)
-    chosen_card = choose_destination_card(generate)
+    choose_destination_card(generate)
         
 
 def choose_destination_card(generate):
@@ -125,10 +125,9 @@ def choose_destination_card(generate):
             except(TypeError, ValueError):
                 continue
 
+        
+        clear_screen()
 
-        time.sleep(1)
-
-    return chosen_card
 
 
 def print_destination_cards(generate, turn):

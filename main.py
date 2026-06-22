@@ -113,10 +113,13 @@ def print_scoreboard(players):
 def player_turn(turn, round, selected_card, selected_colour, stored_card, win, reverse_status):
 
     print_scoreboard(players)
+    input("Please press ENTER to continue")
 
     if round == 1:
         generating = True
+        time.sleep(1)
         print("The game is now starting...Please give the computer to Player 1")
+        clear_screen()
     else:
         generating = False
 
